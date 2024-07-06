@@ -1,5 +1,5 @@
 #!/bin/bash
-sudo -s
+
 # Kiểm tra xem script được chạy với quyền root hay không
 if [ "$(id -u)" -ne 0 ]; then
     echo "Bạn cần chạy script này với quyền root (sudo)." >&2
@@ -45,3 +45,6 @@ echo "vm.swappiness=$SWAPPINESS" | sudo tee -a /etc/sysctl.conf >/dev/null
 sudo sysctl -p
 
 echo "Đã tạo swap với dung lượng $SWAP_SIZE và cấu hình swappiness thành $SWAPPINESS vĩnh viễn thành công."
+echo "Thực hiện các lệnh sau để cài đặt:"
+echo "chmod +x swapfile.sh"
+echo "sudo ./swapfile.sh"
