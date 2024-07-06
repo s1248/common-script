@@ -1,10 +1,5 @@
 #!/bin/bash
-
-# Kiểm tra xem script được chạy với quyền root hay không
-if [ "$(id -u)" -ne 0 ]; then
-    echo "Bạn cần chạy script này với quyền root (sudo)." >&2
-    exit 1
-fi
+sudo -s
 
 # Hỏi người dùng nhập dung lượng swap
 read -p "Nhập dung lượng swap (ví dụ: 2G): " SWAP_SIZE
