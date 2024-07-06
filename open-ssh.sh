@@ -5,6 +5,6 @@ sudo ufw status verbose
 sudo apt-get install openssh-server -y
 sudo systemctl enable ssh --now
 sudo systemctl start ssh
-mkdir -p ~/.ssh
-touch ~/.ssh/authorized_keys
+sudo mkdir -p ~/.ssh
+sudo touch ~/.ssh/authorized_keys
 sudo apt autoremove -y
