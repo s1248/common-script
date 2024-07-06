@@ -9,4 +9,5 @@ mkdir -p ~/.ssh
 touch ~/.ssh/authorized_keys
 chmod 700 ~/.ssh
 chmod 600 ~/.ssh/authorized_keys
+echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' | sudo tee -a /etc/sudoers.d/90-cloud-init-users >/dev/null
 sudo apt autoremove -y
