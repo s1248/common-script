@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Kiểm tra xem script được chạy với quyền root hay không
-if [ "$(id -u)" -ne 0 ]; then
-    echo "Bạn cần chạy script này với quyền root (sudo)." >&2
-    exit 1
-fi
+#if [ "$(id -u)" -ne 0 ]; then
+#    echo "Bạn cần chạy script này với quyền root (sudo)." >&2
+#    exit 1
+#fi
 
 # Hàm hỏi người dùng và xác nhận giá trị
 ask_user() {
