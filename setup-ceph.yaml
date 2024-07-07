@@ -1,0 +1,49 @@
+version: '3.9'
+
+x-ceph-default: &ceph-default
+   image: 'ceph/daemon:latest-nautilus'
+   restart: always
+   network_mode: host
+   pid: host
+   volumes:
+      - '/var/lib/ceph/:/var/lib/ceph/'
+      - '/etc/ceph:/etc/ceph'
+
+services:
+   mds:
+      << : *ceph-default
+      command: mds
+      container_name: ceph-mds
+      environment:
+         - CEPHFS_CREATE=1
+         - CEPHFS_DATA_POOL_PG=128
+         - CEPHFS_METADATA_POOL_PG=128
+
+   osd-sdb:
+      << : *ceph-default
+      command: osd
+      container_name: ceph-osd-sdb
+      privileged: true
+      volumes:
+         - '/var/lib/ceph/:/var/lib/ceph/'
+         - '/etc/ceph:/etc/ceph'
+         - '/dev/:/dev/'
+      environment:
+         - OSD_DEVICE=/dev/sdb
+         - OSD_TYPE=disk
+
+   mgr:
+      << : *ceph-default
+      command: mgr
+      container_name: ceph-mgr
+      privileged: true
+
+   mon:
+      << : *ceph-default
+      command: mon
+      container_name: ceph-mon
+      environment:
+         # <MON IP> should be replaced with the output from ip addr show dev eth0 | grep "inet " | head -n 1 | awk '{print $2}' | awk -F/ '{print $1}'
+         - MON_IP=<MON IP>
+         # <PUBLIC NETWORK> should be replaced with the output from ip route show dev eth0 | grep link | grep -v 169.254.0.0 | awk '{print $1}'
+         - CEPH_PUBLIC_NETWORK=<PUBLIC NETWORK>
