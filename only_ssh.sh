@@ -9,16 +9,25 @@ fi
 # Cấu hình SSH Server
 configure_ssh() {
     # Sửa file cấu hình SSH (/etc/ssh/sshd_config)
-    sudo sed -i 's/^PasswordAuthentication .*/PasswordAuthentication no/' /etc/ssh/sshd_config
-    sudo sed -i 's/^ChallengeResponseAuthentication .*/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
-    sudo sed -i 's/^KerberosAuthentication .*/KerberosAuthentication no/' /etc/ssh/sshd_config
-    sudo sed -i 's/^GSSAPIAuthentication .*/GSSAPIAuthentication no/' /etc/ssh/sshd_config
+    sudo sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+    sudo sed -i 's/^#ChallengeResponseAuthentication yes/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
+    sudo sed -i 's/^#KerberosAuthentication yes/KerberosAuthentication no/' /etc/ssh/sshd_config
+    sudo sed -i 's/^#GSSAPIAuthentication yes/GSSAPIAuthentication no/' /etc/ssh/sshd_config
 
     # Đảm bảo PubkeyAuthentication được bật
     sudo sed -i 's/^#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config
 
     # Tắt sử dụng PAM (Pluggable Authentication Modules)
-    sudo sed -i 's/^UsePAM .*/UsePAM no/' /etc/ssh/sshd_config
+    sudo sed -i 's/^UsePAM yes/UsePAM no/' /etc/ssh/sshd_config
+
+    # Thêm vào cuối file nếu chưa tồn tại
+    sudo tee -a /etc/ssh/sshd_config <<EOF
+# Vô hiệu hóa GSSAPI khi không cần thiết
+GSSAPIKeyExchange no
+
+# Vô hiệu hóa sử dụng PAM nếu không cần thiết
+UseDNS no
+EOF
 
     # Khởi động lại SSH service để áp dụng các thay đổi
     sudo systemctl restart sshd
