@@ -49,3 +49,66 @@ configure_ssh
 disable_remote_desktop
 
 echo "Đã cấu hình máy ảo Ubuntu chỉ cho phép đăng nhập qua SSH bằng private key và vô hiệu hóa các phương thức xác thực khác, cũng như vô hiệu hóa các dịch vụ Remote Desktop."
+
+# Vô hiệu hóa các dịch vụ desktop environment
+disable_desktop_services() {
+    # Kiểm tra và vô hiệu hóa các dịch vụ quản lý màn hình
+    
+    # GNOME (GDM)
+    if systemctl -q is-active gdm; then
+        sudo systemctl stop gdm
+        sudo systemctl disable gdm
+    fi
+
+    # LightDM (Ubuntu, Xubuntu, Lubuntu, ...)
+    if systemctl -q is-active lightdm; then
+        sudo systemctl stop lightdm
+        sudo systemctl disable lightdm
+    fi
+
+    # KDE (KDM)
+    if systemctl -q is-active kdm; then
+        sudo systemctl stop kdm
+        sudo systemctl disable kdm
+    fi
+
+    # XFCE (XDM)
+    if systemctl -q is-active xdm; then
+        sudo systemctl stop xdm
+        sudo systemctl disable xdm
+    fi
+
+    # LXDE (LXDM)
+    if systemctl -q is-active lxdm; then
+        sudo systemctl stop lxdm
+        sudo systemctl disable lxdm
+    fi
+
+    # Các desktop environment khác nếu có
+    # Thêm các dịch vụ desktop environment khác nếu cần thiết
+}
+
+# Vô hiệu hóa các dịch vụ Remote Desktop
+disable_remote_desktop() {
+    # VNC Server
+    if systemctl -q is-active vncserver; then
+        sudo systemctl stop vncserver
+        sudo systemctl disable vncserver
+    fi
+
+    # XRDP
+    if systemctl -q is-active xrdp; then
+        sudo systemctl stop xrdp
+        sudo systemctl disable xrdp
+    fi
+
+    # Các dịch vụ Remote Desktop khác nếu có
+    # Thêm các dịch vụ Remote Desktop khác nếu cần thiết
+}
+
+# Gọi các hàm để vô hiệu hóa các dịch vụ desktop và Remote Desktop
+disable_desktop_services
+disable_remote_desktop
+
+# Hiển thị thông báo sau khi hoàn thành
+echo "Đã vô hiệu hóa các dịch vụ desktop environment và Remote Desktop liên quan đến Xorg."
