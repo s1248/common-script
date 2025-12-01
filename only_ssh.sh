@@ -14,6 +14,7 @@ configure_ssh() {
     sudo sed -i 's/^#KerberosAuthentication yes/KerberosAuthentication no/' /etc/ssh/sshd_config
     sudo sed -i 's/^#GSSAPIAuthentication yes/GSSAPIAuthentication no/' /etc/ssh/sshd_config
     sudo sed -i 's/^#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config
+    sudo sed -i 's/^PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config    
     
     # Đảm bảo PubkeyAuthentication được bật
     sudo sed -i 's/^#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config
