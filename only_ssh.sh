@@ -13,7 +13,7 @@ configure_ssh() {
     sudo sed -i 's/^#ChallengeResponseAuthentication yes/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
     sudo sed -i 's/^#KerberosAuthentication yes/KerberosAuthentication no/' /etc/ssh/sshd_config
     sudo sed -i 's/^#GSSAPIAuthentication yes/GSSAPIAuthentication no/' /etc/ssh/sshd_config
-    sudo sed -i 's/^#PermitRootLogin prohibit-password/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config
+    sudo sed -i 's/^#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config
     
     # Đảm bảo PubkeyAuthentication được bật
     sudo sed -i 's/^#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config
@@ -24,14 +24,18 @@ configure_ssh() {
     # Tắt sử dụng X11Forwarding để ngăn chiều tấn công từ VPS tới máy client
     sudo sed -i 's/^X11Forwarding yes/X11Forwarding no/' /etc/ssh/sshd_config
 
-    # Thêm vào cuối file nếu chưa tồn tại
-    sudo tee -a /etc/ssh/sshd_config <<EOF
-# Vô hiệu hóa GSSAPI khi không cần thiết
-GSSAPIKeyExchange no
+    # Mặc định là 120 giây (2 phút). Đây là khoảng thời gian một client có thể giữ kết nối mở trước khi xác thực thành công. Giảm xuống LoginGraceTime 30. Kẻ tấn công có thể mở nhiều kết nối và giữ chúng trong trạng thái chờ xác thực để làm cạn kiệt tài nguyên máy chủ (tấn công DoS). 30 giây là quá đủ cho một người dùng hợp lệ đăng nhập.
+    sudo sed -i 's/^#LoginGraceTime 2m/LoginGraceTime 30/' /etc/ssh/sshd_config
 
-# Vô hiệu hóa sử dụng PAM nếu không cần thiết
-UseDNS no
-EOF
+    # Cấu hình Timeout cho Session không hoạt động. Gửi một gói tin "null" sau mỗi 5 phút (300s) để giữ kết nối. Ngắt kết nối nếu không nhận được phản hồi sau 3 lần gửi (tổng cộng 15 phút)
+    sudo sed -i 's/^#ClientAliveInterval 0/ClientAliveInterval 300/' /etc/ssh/sshd_config
+    sudo sed -i 's/^#ClientAliveCountMax 3/ClientAliveCountMax 3/' /etc/ssh/sshd_config
+
+    # Vô hiệu hóa GSSAPI khi không cần thiết
+    sudo sed -i 's/^#GSSAPIKeyExchange no/GSSAPIKeyExchange no/' /etc/ssh/sshd_config
+    
+    # Vô hiệu hóa sử dụng UseDNS để log hiển thị chính xác IP nào đã kết nối.
+    sudo sed -i 's/^#UseDNS no/UseDNS no/' /etc/ssh/sshd_config
 
     # Khởi động lại SSH service để áp dụng các thay đổi
     sudo systemctl restart sshd
