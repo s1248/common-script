@@ -19,8 +19,8 @@ configure_ssh() {
     # Đảm bảo PubkeyAuthentication được bật
     sudo sed -i 's/^#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config
 
-    # Tắt sử dụng PAM (Pluggable Authentication Modules)
-    sudo sed -i 's/^UsePAM yes/UsePAM no/' /etc/ssh/sshd_config
+    # Tắt sử dụng PAM (Pluggable Authentication Modules). Nếu là Ubuntu Cloud Image (OCI, AWS, Azure, GCP...) thì buộc phải cấu hình là yes
+    sudo sed -i 's/^UsePAM no/UsePAM yes/' /etc/ssh/sshd_config
 
     # Tắt sử dụng X11Forwarding để ngăn chiều tấn công từ VPS tới máy client
     sudo sed -i 's/^X11Forwarding yes/X11Forwarding no/' /etc/ssh/sshd_config
