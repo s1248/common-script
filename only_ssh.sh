@@ -21,6 +21,9 @@ configure_ssh() {
     # Tắt sử dụng PAM (Pluggable Authentication Modules)
     sudo sed -i 's/^UsePAM yes/UsePAM no/' /etc/ssh/sshd_config
 
+    # Tắt sử dụng X11Forwarding để ngăn chiều tấn công từ VPS tới máy client
+    sudo sed -i 's/^X11Forwarding yes/X11Forwarding no/' /etc/ssh/sshd_config
+
     # Thêm vào cuối file nếu chưa tồn tại
     sudo tee -a /etc/ssh/sshd_config <<EOF
 # Vô hiệu hóa GSSAPI khi không cần thiết
